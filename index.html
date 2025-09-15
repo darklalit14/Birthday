@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Birthday Surprise</title>
+    <style>
+      @keyframes float {
+        0% {
+          transform: translate(0, 0);
+        }
+        50% {
+          transform: translate(10px, 15px);
+        }
+        100% {
+          transform: translate(0, 0);
+        }
+      }
+
+      body {
+        margin: 0;
+        padding: 0;
+        height: 100vh;
+        background-color: #000;
+        overflow: hidden;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        transition: background 2s ease;
+        position: relative;
+      }
+
+      .text {
+        color: white;
+        font-size: 2rem;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        opacity: 0;
+        position: absolute;
+        animation: fadeSlideZoom 2s ease forwards;
+      }
+
+      @keyframes fadeSlideZoom {
+        0% {
+          opacity: 0;
+          transform: translateY(-50px) scale(0.8);
+        }
+        100% {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
+      }
+
+      .hidden {
+        display: none;
+      }
+
+      button {
+        display: none;
+        padding: 12px 24px;
+        font-size: 1rem;
+        border: none;
+        border-radius: 25px;
+        cursor: pointer;
+        background-color: #fff;
+        color: #000;
+        z-index: 10;
+        position: absolute;
+        bottom: 40px;
+        left: 50%;
+        transform: translateX(-50%);
+      }
+
+      #surprise-message {
+        display: none;
+        font-size: 3rem;
+        color: #ff69b4;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        animation: popIn 2s ease forwards;
+        z-index: 10;
+      }
+
+      @keyframes popIn {
+        0% {
+          transform: scale(0);
+          opacity: 0;
+        }
+        100% {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+
+      .balloon {
+        position: absolute;
+        bottom: -100px;
+        width: 50px;
+        animation: floatUp 10s linear infinite;
+      }
+
+      @keyframes floatUp {
+        0% {
+          transform: translateY(0);
+        }
+        100% {
+          transform: translateY(-120vh);
+        }
+      }
+
+      .sparkle {
+        position: absolute;
+        top: 0;
+        width: 20px;
+        height: 20px;
+        background: radial-gradient(circle, #fff 0%, transparent 60%);
+        animation: sparkleDrop 5s linear infinite;
+      }
+
+      @keyframes sparkleDrop {
+        0% {
+          transform: translateY(0);
+          opacity: 1;
+        }
+        100% {
+          transform: translateY(100vh);
+          opacity: 0;
+        }
+      }
+
+      .bulb-container {
+        position: absolute;
+        top: 0;
+        width: 100%;
+        display: none;
+        justify-content: space-around;
+        padding: 10px;
+        z-index: 5;
+      }
+
+      .bulb {
+        width: 30px;
+        height: 30px;
+        background-color: grey;
+        border-radius: 50%;
+        transform: rotate(180deg);
+        position: relative;
+        margin-top: 0;
+        transition: background-color 0.3s, box-shadow 0.3s;
+        box-shadow: inset 0 -3px 8px rgba(0, 0, 0, 0.5);
+      }
+
+      .bulb::before {
+        content: "";
+        position: absolute;
+        top: -8px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 6px;
+        height: 12px;
+        background: #444;
+        border-radius: 2px;
+      }
+
+      .bulb.glow {
+        box-shadow: 0 0 25px 15px rgba(255, 255, 255, 0.95),
+          0 0 40px 10px rgba(255, 255, 255, 0.6),
+          inset 0 0 10px rgba(255, 255, 255, 0.5),
+          inset 0 -3px 8px rgba(0, 0, 0, 0.5);
+      }
+
+      #cake {
+        display: none;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 10;
+        animation: popIn 2s ease forwards;
+      }
+
+      .layer {
+        width: 250px;
+        height: 60px;
+        background: pink;
+        border-radius: 10px;
+        margin: 0 -100px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      }
+
+      .layer-bottom {
+        background: #ff6f91;
+      }
+      .layer-middle {
+        background: #ffb6c1;
+        margin-top: -20px;
+      }
+      .layer-top {
+        background: #fff0f5;
+        margin-top: -20px;
+      }
+
+      .candles {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        margin-top: -40px;
+      }
+
+      .candle {
+        width: 10px;
+        height: 30px;
+        background: #333;
+        position: relative;
+      }
+
+      .candle.burning::after {
+        content: "";
+        position: absolute;
+        top: -15px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 10px;
+        height: 15px;
+        background: radial-gradient(
+          circle,
+          yellow 0%,
+          orange 60%,
+          transparent 70%
+        );
+        border-radius: 50%;
+        animation: flicker 0.2s infinite alternate;
+      }
+
+      @keyframes flicker {
+        0% {
+          opacity: 0.8;
+          transform: translateX(-50%) scale(1);
+        }
+        100% {
+          opacity: 1;
+          transform: translateX(-50%) scale(1.2);
+        }
+      }
+
+      @keyframes float {
+        0% {
+          transform: translate(0px, 0px);
+        }
+        50% {
+          transform: translate(10px, -15px);
+        }
+        100% {
+          transform: translate(0px, 0px);
+        }
+      }
+
+      .kitten {
+        width: 160px;
+        height: 160px;
+        object-fit: cover;
+        border: 3px solid #fff;
+        border-radius: 12px;
+        position: absolute;
+        transition: transform 0.3s ease;
+        animation: float 6s ease-in-out infinite;
+        z-index: 5;
+      }
+
+      .kitten:hover {
+        transform: scale(5);
+        z-index: 20;
+      }
+
+      #birthday-wish {
+        display: none;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 2.5rem;
+        color: #fff;
+        font-weight: bold;
+        text-align: center;
+        text-shadow: 2px 2px 10px #ff69b4, 0 0 20px #ff1493;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        animation: wishAppear 2s ease forwards;
+        z-index: 30;
+      }
+
+      @keyframes floatRandom {
+        0% {
+          transform: translate(0, 0) rotate(0deg);
+        }
+        25% {
+          transform: translate(10px, -10px) rotate(2deg);
+        }
+        50% {
+          transform: translate(-10px, 10px) rotate(-2deg);
+        }
+        75% {
+          transform: translate(5px, -5px) rotate(1deg);
+        }
+        100% {
+          transform: translate(0, 0) rotate(0deg);
+        }
+      }
+
+      @keyframes wishAppear {
+        0% {
+          opacity: 0;
+          transform: translate(-50%, -60%) scale(0.8);
+        }
+        100% {
+          opacity: 1;
+          transform: translate(-50%, -50%) scale(1);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="bulb-container" id="bulbs">
+      <div class="bulb" style="background-color: red"></div>
+      <div class="bulb" style="background-color: orange"></div>
+      <div class="bulb" style="background-color: yellow"></div>
+      <div class="bulb" style="background-color: green"></div>
+      <div class="bulb" style="background-color: blue"></div>
+      <div class="bulb" style="background-color: violet"></div>
+    </div>
+
+    <div id="text1" class="text">Why it's so dark here</div>
+    <div id="text2" class="text hidden">Looking something Fishy!!!</div>
+    <div id="text3" class="text hidden">
+      Let me check by turning on the Lights
+    </div>
+
+    <button id="light-button">Turn the light on</button>
+    <button id="decor-button">Glow Bulbs</button>
+    <button id="music-button">Play Music</button>
+    <button id="cake-button">Best cake for the sweetest girl</button>
+    <button id="candles-button">Light up the candles</button>
+    <button id="photos-button">That's how a Princess looks💖</button>
+
+    <div id="surprise-message">🎉 SURPRISE BABYY !!! 🎉</div>
+    <audio id="bg-music" src="hbd.mp3" preload="auto" loop></audio>
+
+    <div id="cake">
+      <div class="candles">
+        <div class="candle"></div>
+        <div class="candle"></div>
+        <div class="candle"></div>
+      </div>
+      <div class="layer layer-top"></div>
+      <div class="layer layer-middle"></div>
+      <div class="layer layer-bottom"></div>
+    </div>
+
+    <div id="birthday-wish">
+      Happy 18th Birthday Jesrylyn 🎂💖<br />I love you so much! 💕<br />Wishing
+      you a magical year ahead!
+    </div>
+
+    <script>
+      const lightBtn = document.getElementById("light-button");
+      const decorBtn = document.getElementById("decor-button");
+      const musicBtn = document.getElementById("music-button");
+      const cakeBtn = document.getElementById("cake-button");
+      const candlesBtn = document.getElementById("candles-button");
+      const photosBtn = document.getElementById("photos-button");
+      const cake = document.getElementById("cake");
+      const surprise = document.getElementById("surprise-message");
+      const bulbs = document.querySelectorAll(".bulb");
+      const bulbContainer = document.getElementById("bulbs");
+      const body = document.body;
+
+      setTimeout(() => {
+        document.getElementById("text1").classList.add("hidden");
+        document.getElementById("text2").classList.remove("hidden");
+      }, 3000);
+
+      setTimeout(() => {
+        document.getElementById("text2").classList.add("hidden");
+        document.getElementById("text3").classList.remove("hidden");
+      }, 6000);
+
+      setTimeout(() => {
+        document.getElementById("text3").classList.add("hidden");
+        lightBtn.style.display = "block";
+      }, 9000);
+
+      lightBtn.addEventListener("click", () => {
+        body.style.background = "linear-gradient(to right, #ffe4ec, #ffcce0)";
+        lightBtn.style.display = "none";
+        surprise.style.display = "block";
+        decorBtn.style.display = "block";
+        bulbContainer.style.display = "flex";
+
+        for (let i = 0; i < 30; i++) {
+          const sparkle = document.createElement("div");
+          sparkle.classList.add("sparkle");
+          sparkle.style.left = Math.random() * 100 + "vw";
+          sparkle.style.animationDuration = Math.random() * 3 + 2 + "s";
+          body.appendChild(sparkle);
+        }
+
+        const balloonImages = [
+          "b1.png",
+          "b2.png",
+          "b3.png",
+          "b4.png",
+          "b5.png",
+        ]; // Add more if needed
+        for (let i = 0; i < 20; i++) {
+          const balloon = document.createElement("img");
+          const randomIndex = Math.floor(Math.random() * balloonImages.length);
+          balloon.src = balloonImages[randomIndex];
+          balloon.classList.add("balloon");
+          balloon.style.left = Math.random() * 100 + "vw";
+          balloon.style.animationDelay = Math.random() * 5 + "s";
+          balloon.style.width = Math.random() * 30 + 30 + "px";
+          body.appendChild(balloon);
+        }
+      });
+
+      decorBtn.addEventListener("click", () => {
+        bulbs.forEach((bulb) => bulb.classList.add("glow"));
+        decorBtn.style.display = "none";
+        surprise.style.display = "none";
+        musicBtn.style.display = "block";
+      });
+
+      musicBtn.addEventListener("click", () => {
+        const music = document.getElementById("bg-music");
+        music.play();
+        musicBtn.style.display = "none";
+        cakeBtn.style.display = "block";
+      });
+
+      cakeBtn.addEventListener("click", () => {
+        cake.style.display = "block";
+        cakeBtn.style.display = "none";
+        candlesBtn.style.display = "block";
+      });
+
+      candlesBtn.addEventListener("click", () => {
+        document.querySelectorAll(".candle").forEach((candle) => {
+          candle.classList.add("burning");
+        });
+        candlesBtn.style.display = "none";
+        photosBtn.style.display = "block";
+      });
+
+      photosBtn.addEventListener("click", () => {
+        photosBtn.style.display = "none";
+        const images = [
+          "WhatsApp Image 2025-08-15 at 18.46.47.jpeg",
+          "WhatsApp Image 2025-08-15 at 18.47.42.jpeg",
+          "WhatsApp Image 2025-08-15 at 18.47.43 (1) copy.jpeg",
+          "WhatsApp Image 2025-08-15 at 18.47.43 (2).jpeg",
+          "WhatsApp Image 2025-08-15 at 18.47.43.jpeg",
+          "WhatsApp Image 2025-08-15 at 18.47.44 (1).jpeg",
+          "WhatsApp Image 2025-08-15 at 18.47.44.jpeg",
+          "WhatsApp Image 2025-08-15 at 18.47.45 (2).jpeg",
+          "WhatsApp Image 2025-08-15 at 18.47.45.jpeg",
+          "WhatsApp Image 2025-08-15 at 18.48.46.jpeg",
+          "WhatsApp Image 2025-08-15 at 18.48.47 (1).jpeg",
+          "WhatsApp Image 2025-08-15 at 18.48.47.jpeg",
+        ];
+        for (let i = 0; i < images.length; i++) {
+          const img = document.createElement("img");
+          img.src = images[i];
+          img.className = "kitten";
+          img.style.left = Math.random() * 90 + "vw";
+          img.style.top = Math.random() * 80 + "vh";
+          body.appendChild(img);
+        }
+
+        setTimeout(() => {
+          document.getElementById("birthday-wish").style.display = "block";
+        }, 5000);
+      });
+    </script>
+  </body>
+</html>
